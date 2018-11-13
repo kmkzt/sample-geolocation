@@ -1,0 +1,49 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <button id="getGeo">現在地を取得</button>
+    <div id="startLat"></div>
+    <div id="startLon"></div>
+    <div id="nudge"></div>
+    <script>
+      const button = document.getElementById("getGeo");
+      button.onclick = function() {
+        let startPos;
+        const element = document.getElementById("nudge");
+
+        const showNudgeBanner = function() {
+          nudge.style.display = "block";
+        };
+
+        const hideNudgeBanner = function() {
+          nudge.style.display = "none";
+        };
+
+        const nudgeTimeoutId = setTimeout(showNudgeBanner, 5000);
+
+        const geoSuccess = function(position) {
+          hideNudgeBanner();
+          // We have the location, don't display banner
+          clearTimeout(nudgeTimeoutId);
+
+          // Do magic with location
+          startPos = position;
+          console.log(startPos)
+          document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+          document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+        };
+        const geoError = function(error) {
+          switch(error.code) {
+            case error.TIMEOUT:
+              // The user didn't accept the callout
+              showNudgeBanner();
+              break;
+          }
+        };
+
+        navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+      };
+    </script>
+  </body>
+</html>
